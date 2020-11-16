@@ -2,14 +2,14 @@ import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLineEdit, QLabel, QMainWindow
 from PyQt5.QtGui import QPainter, QColor
-from PyQt5 import uic
+from UI import UI_Form
 from random import *
 
 
 class Example(QWidget):
     def __init__(self):
         super().__init__()
-        uic.loadUi('Ui.ui', self)  # Загружаем дизайн
+        UI_Form.setupUI()
         self.flag = False
         self.pushButton.clicked.connect(self.draw)
 
@@ -21,8 +21,9 @@ class Example(QWidget):
         if self.flag:
             qp = QPainter()
             qp.begin(self)
-            qp.setPen(QColor(255, 255, 0))
-            qp.setBrush(QColor(255, 255, 0))
+            r, g, b = randint(0, 255), randint(0, 255), randint(0, 255)
+            qp.setPen(QColor(r, g, b))
+            qp.setBrush(QColor(r, g, b))
             x1 = randint(0, 780)
             y1 = randint(0, 500)
             self.x, self.y = x1, y1
