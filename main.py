@@ -1,41 +1,29 @@
 import sys
-
-from PyQt5.QtWidgets import QApplication, QWidget, QLineEdit, QLabel, QMainWindow
-from PyQt5.QtGui import QPainter, QColor
-from UI import UI_Form
-from random import *
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
+from PyQt5 import uic
+import sqlite3
 
 
-class Example(QWidget):
+class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
-        UI_Form.setupUI()
-        self.flag = False
-        self.pushButton.clicked.connect(self.draw)
+        uic.loadUi('main.ui', self)
+        self.params = {}
+        self.con = sqlite3.connect('coffee.db')
+        self.pushButton.clicked.connect(self.select)
 
-    def draw(self):
-        self.flag = True
-        self.update()
-
-    def paintEvent(self, event):
-        if self.flag:
-            qp = QPainter()
-            qp.begin(self)
-            r, g, b = randint(0, 255), randint(0, 255), randint(0, 255)
-            qp.setPen(QColor(r, g, b))
-            qp.setBrush(QColor(r, g, b))
-            x1 = randint(0, 780)
-            y1 = randint(0, 500)
-            self.x, self.y = x1, y1
-            self.drawEll(qp)
-            qp.end()
-
-    def drawEll(self, qp):
-        qp.drawEllipse(self.x, self.y, randint(10, 250), randint(10, 250))
+    def select(self):
+        req = f'SELECT * FROM Coffees WHERE id = {self.lineEdit.text()}'
+        cur = self.con.cursor()
+        result = cur.execute(req).fetchall()
+        self.tableWidget.setRowCount(len(result))
+        self.tableWidget.setColumnCount(len(result[0]))
+        for i, elem in enumerate(result):
+            for j, val in enumerate(elem):
+                self.tableWidget.setItem(i, j, QTableWidgetItem(str(val)))
 
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = Example()
-    ex.show()
-    sys.exit(app.exec_())
+app = QApplication(sys.argv)
+ex = MyWidget()
+ex.show()
+sys.exit(app.exec_())
