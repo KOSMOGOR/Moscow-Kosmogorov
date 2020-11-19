@@ -1,15 +1,15 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QMessageBox
-from PyQt5 import uic
+from UI_form import UI_Form
 import sqlite3
 
 
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        UI_Form.setupUi()
         self.params = {}
-        self.con = sqlite3.connect('coffee.db')
+        self.con = sqlite3.connect('data/coffee.db')
         self.pushButton.clicked.connect(self.select)
         self.pushButton_2.clicked.connect(self.update_elems)
 
